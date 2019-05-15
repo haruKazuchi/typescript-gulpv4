@@ -6,6 +6,9 @@ const browserSync  = require('browser-sync');
 const autoprefixer = require('gulp-autoprefixer');
 const ts = require('gulp-typescript');
 const uglify = require('gulp-uglify');
+const webpackStream = require("webpack-stream");
+const webpack = require("webpack");
+const webpackConfig = require("./webpack.config");
 
 const CONF = {
 	SASS : {
@@ -47,13 +50,8 @@ function js() {
 }
 
 function typescript() {
-	return src(CONF.TS.SOURCE)
-		.pipe(ts({
-            noImplicitAny: true,
-            outFile: 'main.min.js'
-        }))
-		.pipe(uglify())
-		.pipe(dest(CONF.TS.OUTPUT))
+	return webpackStream(webpackConfig, webpack)
+		.pipe(dest(CONF.TS.OUTPUT, { sourcemaps: true }))
 }
 
 
